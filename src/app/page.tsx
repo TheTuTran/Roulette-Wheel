@@ -1,23 +1,60 @@
 "use client";
 
+import Ball from "@/components/Ball";
 import Wheel from "@/components/Wheel";
 import { useState } from "react";
-const numbers = [
-  32, 15, 19, 4, 21, 2, 25, 17, 34, 6, 27, 13, 36, 11, 30, 8, 23, 10, 5, 24, 16,
-  33, 1, 20, 14, 31, 9, 22, 18, 29, 7, 28, 12, 35, 3, 26, 0,
-];
 
 const Home = () => {
-  const [selectedNumber, setSelectedNumber] = useState(null);
+  const [selectedNumber, setSelectedNumber] = useState<{
+    num: number;
+    color: string;
+  }>({
+    num: 0,
+    color: "green",
+  });
+
+  const [isSpinning, setIsSpinning] = useState(false);
+
+  const handleSpin = () => {
+    setIsSpinning(true);
+
+    const randomDuration = Math.floor(Math.random() * (8000 - 5000 + 1)) + 5000; // Random time between 5s to 15s
+
+    setTimeout(() => {
+      setIsSpinning(false);
+    }, randomDuration);
+  };
 
   return (
     <div className="bg-slate-700 text-center min-h-screen py-10">
-      <button className="px-4 py-2 bg-green-600 text-white mx-2">Spin</button>
-      <button className="px-4 py-2 bg-green-800 text-white mx-2">
+      <button
+        onClick={handleSpin}
+        className={`px-4 py-2  text-white mx-2 ${
+          isSpinning ? "bg-green-800" : "bg-green-600"
+        }`}
+        disabled={isSpinning}
+      >
+        Spin
+      </button>
+      <button
+        className={`px-4 py-2  text-white mx-2 ${
+          isSpinning ? "bg-green-800" : "bg-green-600"
+        }`}
+      >
         New Game
       </button>
-
-      <Wheel />
+      <div className="bg-gray-900 text-white flex flex-col mt-8">
+        <span>Results:</span>
+        <span className="">Selected Number: {selectedNumber.num}</span>
+        <span className="">Selected Color: {selectedNumber.color}</span>
+      </div>
+      <div className="min-h-[100vh] flex items-center justify-between mx-[10vw]">
+        <section className="flex items-start justify-center rounded-[50%]">
+          <Wheel />
+          <Ball setSelectedNumber={setSelectedNumber} isSpinning={isSpinning} />
+        </section>
+        <section></section>
+      </div>
     </div>
   );
 };
